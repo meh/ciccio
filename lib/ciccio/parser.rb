@@ -23,9 +23,11 @@ class Parser < Parslet::Parser
 		(expression | identifier | float | integer | string).repeat.as(:expression)
 	}
 
-	rule(:identifier) {
-		(match('[^:()[0-9]\-+"\s]') >> match('[^()\s]').repeat).as(:identifier) >> space?
-	}
+	rule(:identifier) {(
+		match('[^:()[0-9]\-+"\s]') >> match('[^()\s]').repeat |
+		match('[\-+]') >> match('[^0-9]') >> match('[^()\s]').repeat |
+		match('[^:()[0-9]"\s]')
+	).as(:identifier) >> space? }
 
 	rule(:float) { (
 		integer >> (
